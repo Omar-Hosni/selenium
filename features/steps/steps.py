@@ -7,7 +7,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.alert import Alert
 import time
+from capmonster_python import RecaptchaV2Task
 
+API_KEY = "e2b2224dca7c549d21eeb3cf8c431197"
+capmonster = RecaptchaV2Task(API_KEY)
+
+
+'''
+Demo Request
+'''
 @given(u'I navigate to the PHPTravelsDemo request form')
 def launchBrowser(context):
     options = webdriver.ChromeOptions()
@@ -109,19 +117,74 @@ def errorMessageResultSum(context):
         alert = context.driver.switch_to.alert
         alert.accept()
 
+
+
 '''
-LOGIN AND SIGN UP
+Sign up
+'''
+@given(u'I navigate to registration page')
+def launchRegistration(context):
+    options = webdriver.ChromeOptions()
+    context.driver = webdriver.Chrome(options=options)
+
+@when('I fill the registration form')
+def fillRegistrationForm(context):
+    context.driver.get('https://phptravels.org/register.php')
+
+    context.driver.find_element(By.ID, 'inputFirstName').send_keys('omar')
+    context.driver.find_element(By.ID, 'inputLastName').send_keys('hosny')
+    context.driver.find_element(By.ID, 'inputEmail').send_keys('omar@gmail.com')
+    context.driver.find_element(By.ID, 'inputAddress1').send_keys('Bethlen utca, 45, 2, 7')
+    context.driver.find_element(By.ID, 'inputCity').send_keys('Debrecen')
+    context.driver.find_element(By.ID, 'inputPostcode').send_keys('4026')
+    
+    context.driver.find_element(By.ID, 'inputNewPassword1').send_keys('test123')
+    context.driver.find_element(By.ID, 'inputNewPassword2').send_keys('test123')
+    time.sleep(15)
+
+@when(u'I click on captcha')
+def registrationCaptcha(context):
+    '''
+    website = "https://phptravels.org/register.php"
+    captcha_class ="rc-anchor-container"
+    captcha_key="6LdJtY8UAAAAADTgIWYnG_VKkfNqqB-w8CdQFL7Y"
+
+    task_id = capmonster .create_task(website, captcha_key)
+    result = capmonster.join_task_result(task_id).get("gRecaptchaResponse")
+    context.driver.execute_script("document.getElementsByClassName(`g-recaptcha-response`)[0].innerHTML = " f"'{result}';")
+    context.driver.find_element(By.ID, "recaptcha-demo-submit").click()
+    '''
+
+    time.sleep(2)
+
+@when(u'I submit the registration form')
+def submitRegistration(context):
+    context.driver.find_element(By.XPATH,'/html/body/section/div/div[1]/div[2]/div/form/p/input').click()
+
+@then(u'I should get error message')
+def getErrorRegistration(context):
+    text = context.driver.find_element(By.CLASS_NAME,'alert alert-danger').text
+    print(text)
+
+'''
+LOGIN
 '''
 @given(u'I navigate to the login page')
 def launchLogin(context):
-    context.get('https://phptravels.org/login')
+    options = webdriver.ChromeOptions()
+    context.driver = webdriver.Chrome(options=options)
+
 
 @when(u'I enter valid login "{email}", "{password}" credentials')
 def loginForm(context, email, password):
+    context.driver.get('https://phptravels.org/login')
+
     context.driver.find_element(By.ID,'inputEmail').send_keys(email)
-    context.driver.find_element(By.NAME,'inputPassword').send_keys(password)
-    recaptcha_checkbox = context.driver.find_element(By.CLASS_NAME, 'rc-anchor-center-item.rc-anchor-checkbox-label')
-    context.driver.execute_script("arguments[0].click();", recaptcha_checkbox)
+    context.driver.find_element(By.ID,'inputPassword').send_keys(password)
+
+    captcha_element = context.driver.find_element(By.ID, 'recaptcha-anchor')
+    captcha_element.click()
+    time.sleep(2)
 
 @when(u'I click the login button')
 def loginBtn(context):
