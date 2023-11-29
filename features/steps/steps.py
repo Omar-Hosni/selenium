@@ -13,23 +13,23 @@ def launchBrowser(context):
     options = webdriver.ChromeOptions()
     context.driver = webdriver.Chrome(options=options)
 
-@when(u'I fill in the form with correct information')
+@when(u'I fill in the form with "John", "Doe", "ABC Inc.", "john.doe@example.com"')
 def fillForm(context):
     context.driver.get('https://phptravels.com/demo/')
 
-    context.driver.find_element(By.NAME,'first_name').send_keys('omar')
-    context.driver.find_element(By.NAME,'last_name').send_keys('hosny')
-    context.driver.find_element(By.NAME,'business_name').send_keys('meero')
-    context.driver.find_element(By.NAME,'email').send_keys('test@gmail.com')
+    context.driver.find_element(By.NAME,'first_name').send_keys('John')
+    context.driver.find_element(By.NAME,'last_name').send_keys('Doe')
+    context.driver.find_element(By.NAME,'business_name').send_keys('ABC Inc.')
+    context.driver.find_element(By.NAME,'email').send_keys('john.doe@example.com')
 
-@when(u'I leave one or more required fields empty')
+@when(u'I leave "first_name" empty')
 def partialFillForm(context):
     context.driver.get('https://phptravels.com/demo/')
 
     context.driver.find_element(By.NAME,'first_name').send_keys('')
-    context.driver.find_element(By.NAME,'last_name').send_keys('hosny')
-    context.driver.find_element(By.NAME,'business_name').send_keys('meero')
-    context.driver.find_element(By.NAME,'email').send_keys('test@gmail.com')
+    context.driver.find_element(By.NAME,'last_name').send_keys('Doe')
+    context.driver.find_element(By.NAME,'business_name').send_keys('ABC Inc.')
+    context.driver.find_element(By.NAME,'email').send_keys('john.doe@example.com')
 
 
 @when(u'I provide the correct result for num1+num2')
