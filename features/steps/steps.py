@@ -13,23 +13,33 @@ def launchBrowser(context):
     options = webdriver.ChromeOptions()
     context.driver = webdriver.Chrome(options=options)
 
-@when(u'I fill in the form with "John", "Doe", "ABC Inc.", "john.doe@example.com"')
-def fillForm(context):
+@when(u'I fill in the form with "{first_name}", "{last_name}", "{business_name}", "{email}"')
+def fillForm(context, first_name, last_name, business_name, email):
     context.driver.get('https://phptravels.com/demo/')
 
-    context.driver.find_element(By.NAME,'first_name').send_keys('John')
-    context.driver.find_element(By.NAME,'last_name').send_keys('Doe')
-    context.driver.find_element(By.NAME,'business_name').send_keys('ABC Inc.')
-    context.driver.find_element(By.NAME,'email').send_keys('john.doe@example.com')
+    context.driver.find_element(By.NAME,'first_name').send_keys(first_name)
+    context.driver.find_element(By.NAME,'last_name').send_keys(last_name)
+    context.driver.find_element(By.NAME,'business_name').send_keys(business_name)
+    context.driver.find_element(By.NAME,'email').send_keys(email)
 
-@when(u'I leave "first_name" empty')
-def partialFillForm(context):
+@when(u'I fill in the form with "{first_name}", "{last_name}", "{business_name}", "{email}", but leave "{missing_field}" empty')
+def partialFillForm(context, missing_field, first_name, last_name, business_name, email):
     context.driver.get('https://phptravels.com/demo/')
 
-    context.driver.find_element(By.NAME,'first_name').send_keys('')
-    context.driver.find_element(By.NAME,'last_name').send_keys('Doe')
-    context.driver.find_element(By.NAME,'business_name').send_keys('ABC Inc.')
-    context.driver.find_element(By.NAME,'email').send_keys('john.doe@example.com')
+    if missing_field == 'first_name':
+        first_name=""
+    if missing_field == 'last_name':
+        last_name=""
+    if missing_field == 'business_name':
+        business_name=""
+    if missing_field == 'email':
+        email=""
+    
+    
+    context.driver.find_element(By.NAME,'first_name').send_keys(first_name)
+    context.driver.find_element(By.NAME,'last_name').send_keys(last_name)
+    context.driver.find_element(By.NAME,'business_name').send_keys(business_name)
+    context.driver.find_element(By.NAME,'email').send_keys(email)
 
 
 @when(u'I provide the correct result for num1+num2')
