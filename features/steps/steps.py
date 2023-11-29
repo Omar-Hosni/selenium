@@ -118,7 +118,6 @@ def errorMessageResultSum(context):
         alert.accept()
 
 
-
 '''
 Sign up
 '''
@@ -133,7 +132,24 @@ def fillRegistrationForm(context):
 
     context.driver.find_element(By.ID, 'inputFirstName').send_keys('omar')
     context.driver.find_element(By.ID, 'inputLastName').send_keys('hosny')
-    context.driver.find_element(By.ID, 'inputEmail').send_keys('omar@gmail.com')
+    context.driver.find_element(By.ID, 'inputEmail').send_keys('omarzzz123@gmail.com')
+    context.driver.find_element(By.ID, 'inputPhone').send_keys('123123423423')
+    
+    context.driver.find_element(By.ID, 'inputAddress1').send_keys('Bethlen utca, 45, 2, 7')
+    context.driver.find_element(By.ID, 'inputCity').send_keys('Debrecen')
+    context.driver.find_element(By.ID, 'inputPostcode').send_keys('4026')
+    
+    context.driver.find_element(By.ID, 'inputNewPassword1').send_keys('test123')
+    context.driver.find_element(By.ID, 'inputNewPassword2').send_keys('test123')
+    time.sleep(15)
+
+@when('I partially fill the registration form')
+def fillRegistrationForm(context):
+    context.driver.get('https://phptravels.org/register.php')
+
+    context.driver.find_element(By.ID, 'inputFirstName').send_keys('omar')
+    context.driver.find_element(By.ID, 'inputLastName').send_keys('hosny')
+    context.driver.find_element(By.ID, 'inputEmail').send_keys('omarzzz123@gmail.com')
     context.driver.find_element(By.ID, 'inputAddress1').send_keys('Bethlen utca, 45, 2, 7')
     context.driver.find_element(By.ID, 'inputCity').send_keys('Debrecen')
     context.driver.find_element(By.ID, 'inputPostcode').send_keys('4026')
@@ -163,8 +179,18 @@ def submitRegistration(context):
 
 @then(u'I should get error message')
 def getErrorRegistration(context):
-    text = context.driver.find_element(By.CLASS_NAME,'alert alert-danger').text
-    print(text)
+    elements = context.driver.find_element(By.CSS_SELECTOR,"div.alert>ul")
+
+    if not elements:
+        print("No elements found")
+        return
+    
+    for e in elements:
+        print(e.text)
+    print(type(elements))
+
+    assert elements[0].text == 'You did not enter your phone number'
+    assert elements[1].text == 'Please complete the captcha and try again.'
 
 '''
 LOGIN
@@ -186,6 +212,18 @@ def loginForm(context, email, password):
     captcha_element.click()
     time.sleep(2)
 
+@when(u'I enter invalid login "{email}","{password}" credentials')
+def loginForm(context, email, password):
+    context.driver.get('https://phptravels.org/login')
+
+    context.driver.find_element(By.ID,'inputEmail').send_keys(email)
+    context.driver.find_element(By.ID,'inputPassword').send_keys(password)
+
+    captcha_element = context.driver.find_element(By.ID, 'recaptcha-anchor')
+    captcha_element.click()
+    time.sleep(2)
+
+
 @when(u'I click the login button')
 def loginBtn(context):
     context.driver.find_element(By.ID,'login').click()
@@ -199,6 +237,12 @@ def checkNavigation(context):
         print(f"The dashboard link '{dashboard_link}' is currently open.")
     else:
         print(f"The dashboard link is not currently open. Current URL: {current_url}")
+
+@then(u'I should get error login message')
+def errorLogin(context):
+    text = context.driver.find_element(By.XPATH, '/html/body/section/div/div[1]/div/form/div/div[1]/div[2]').text
+    assert text is 'Please complete the captcha and try again.'
+
 
 
 '''

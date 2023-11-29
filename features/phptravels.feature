@@ -1,7 +1,5 @@
 Feature: PHPTravelsDemo Request Form
 
-
-
   Scenario Outline: Successful Submission with Different Data
     Given I navigate to the PHPTravelsDemo request form
     When I fill in the form with "<first_name>", "<last_name>", "<business_name>", "<email>"
@@ -39,17 +37,22 @@ Feature: PHPTravelsDemo Request Form
     Then I should see an error message indicating an incorrect result for num1+num2
 
     Examples:
-      | first_name | last_name | business_name | email                  |
-      | John       | Doe       | ABC Inc.       | john.doe@example.com  |
-      | Jane       | Sam       | ABC Inc.       | jane.sam@example.com  |
-      | Omar       | Hosny     | Meero Inc.     | meero.inc@gmail.com   |
-      | Willy      | Mike      | Pearson Inc.   | @example.com          |
-
+      | first_name | last_name | business_name | email                    |
+      | John       | Doe       | ABC Inc.       | john.doe@example.com     |
+      | Jane       | Sam       | ABC Inc.       | jane.sam@example.com     |
+      | Omar       | Hosny     | Meero Inc.     | meero.inc@gmail.com     |
+      | Willy      | Mike      | Pearson Inc.   | @example.com     |
 
   Scenario: Successful registration
     Given I navigate to registration page 
-    When I fill the registration form 
-    #And I click on captcha
+    When I fill the registration form
+    And I click on captcha 
+    And I submit the registration form 
+    Then I should get error message
+
+  Scenario: Invalid registration
+    Given I navigate to registration page 
+    When I partially fill the registration form 
     And I submit the registration form 
     Then I should get error message
 
@@ -67,7 +70,7 @@ Feature: PHPTravelsDemo Request Form
     Given I navigate to the login page
     When I enter invalid login "<email>", "<password>" credentials
     And I click the login button
-    Then I should be redirected to the dashboard
+    Then I should get error login message
 
     Examples:
     | email | password |
