@@ -110,6 +110,35 @@ def errorMessageResultSum(context):
         alert.accept()
 
 '''
+LOGIN AND SIGN UP
+'''
+@given(u'I navigate to the login page')
+def launchLogin(context):
+    context.get('https://phptravels.org/login')
+
+@when(u'I enter valid login "{email}", "{password}" credentials')
+def loginForm(context, email, password):
+    context.driver.find_element(By.ID,'inputEmail').send_keys(email)
+    context.driver.find_element(By.NAME,'inputPassword').send_keys(password)
+    recaptcha_checkbox = context.driver.find_element(By.CLASS_NAME, 'rc-anchor-center-item.rc-anchor-checkbox-label')
+    context.driver.execute_script("arguments[0].click();", recaptcha_checkbox)
+
+@when(u'I click the login button')
+def loginBtn(context):
+    context.driver.find_element(By.ID,'login').click()
+
+@then(u'I should be redirected to the dashboard')
+def checkNavigation(context):
+    dashboard_link = 'https://phptravels.org/clientarea.php'
+    current_url = context.driver.current_url
+
+    if dashboard_link in current_url:
+        print(f"The dashboard link '{dashboard_link}' is currently open.")
+    else:
+        print(f"The dashboard link is not currently open. Current URL: {current_url}")
+
+
+'''
 @given(u'launch chrome browser')
 def launchBrowser(context):
     options = webdriver.ChromeOptions()

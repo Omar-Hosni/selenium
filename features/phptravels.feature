@@ -39,3 +39,26 @@ Feature: PHPTravelsDemo Request Form
     Examples:
       | first_name | last_name | business_name | email                    |
       | John       | Doe       | ABC Inc.       | john.doe@example.com     |
+      | Jane       | Sam       | ABC Inc.       | jane.sam@example.com     |
+      | Omar       | Hosny     | Meero Inc.     | meero.inc@gmail.com     |
+      | Willy      | Mike      | Pearson Inc.   | @example.com     |
+
+  Scenario Outline: Successful Login with registered email and password
+    Given I navigate to the login page
+    When I enter valid login "<email>", "<password>" credentials
+    And I click the login button
+    Then I should be redirected to the dashboard
+
+    Examples:
+    | email | password |
+    | tseeker803@yahoo.com | test123 |
+
+  Scenario Outline: Unsuccessful Login with unregistered email and password
+    Given I navigate to the login page
+    When I enter valid login "<email>", "<password>" credentials
+    And I click the login button
+    Then I should be redirected to the dashboard
+
+    Examples:
+    | email | password |
+    | tseeker803123@yahoo.com | test1234 |
